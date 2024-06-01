@@ -9,6 +9,8 @@ public class Order {
 
         // The deliveryTime has to converted from string to int and then stored in the attribute
         //deliveryTime  = HH*60 + MM
+        this.id = id;
+        this.deliveryTime = covertDeliveryTime(deliveryTime);
     }
 
     public String getId() {
@@ -16,4 +18,12 @@ public class Order {
     }
 
     public int getDeliveryTime() {return deliveryTime;}
+
+    private int covertDeliveryTime(String deliveryTime){
+        // split the string with respect to colon ->  :
+        String[] timeParts = deliveryTime.split(":");
+        int hour = Integer.parseInt(timeParts[0]);
+        int mint = Integer.parseInt(timeParts[1]);
+        return hour*60 + mint;
+    }
 }
