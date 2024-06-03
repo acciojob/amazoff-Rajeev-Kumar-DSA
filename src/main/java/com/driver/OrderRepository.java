@@ -49,44 +49,52 @@ public class OrderRepository {
 
     public Order findOrderById(String orderId){
         // your code here
-        if (orderMap.containsKey(orderId)){
-            return orderMap.get(orderId);
-        }
-        return null;
+//        if (orderMap.containsKey(orderId)){
+//            return orderMap.get(orderId);
+//        }
+//        return null;
+        return orderMap.get(orderId);
     }
 
     public DeliveryPartner findPartnerById(String partnerId){
         // your code here
-        if(partnerMap.containsKey(partnerId)){
-            return partnerMap.get(partnerId);
-        }
-        return null;
+//        if(partnerMap.containsKey(partnerId)){
+//            return partnerMap.get(partnerId);
+//        }
+//        return null;
+        return partnerMap.get(partnerId);
     }
 
     public Integer findOrderCountByPartnerId(String partnerId){
         // your code here
-        if (partnerMap.containsKey(partnerId)){
-            DeliveryPartner deliveryPartner = partnerMap.get(partnerId);
-            return deliveryPartner.getNumberOfOrders();
-        }
-        return 0;
+//        if (partnerMap.containsKey(partnerId)){
+//            DeliveryPartner deliveryPartner = partnerMap.get(partnerId);
+//            return deliveryPartner.getNumberOfOrders();
+//        }
+//        return 0;
+        DeliveryPartner deliveryPartner = partnerMap.get(partnerId);
+        return (deliveryPartner != null) ? deliveryPartner.getNumberOfOrders() : 0;
     }
 
     public List<String> findOrdersByPartnerId(String partnerId){
         // your code here
-        if(partnerToOrderMap.containsKey(partnerId)){
-            return new ArrayList<>(partnerToOrderMap.get(partnerId));
-        }
-        return new ArrayList<>();
+//        if(partnerToOrderMap.containsKey(partnerId)){
+//            return new ArrayList<>(partnerToOrderMap.get(partnerId));
+//        }
+//        return new ArrayList<>();
+
+        HashSet<String> orders = partnerToOrderMap.get(partnerId);
+        return (orders != null) ? new ArrayList<>(orders) : new ArrayList<>();
     }
 
     public List<String> findAllOrders(){
         // your code here
         // return list of all orders
-        if(!orderMap.isEmpty()){
-            return new ArrayList<>(orderMap.keySet());
-        }
-        return new ArrayList<>();
+//        if(!orderMap.isEmpty()){
+//            return new ArrayList<>(orderMap.keySet());
+//        }
+//        return new ArrayList<>();
+        return new ArrayList<>(orderMap.keySet());
     }
 
     public void deletePartner(String partnerId){
@@ -97,14 +105,15 @@ public class OrderRepository {
         // jis partner ko remove karna tha agar uske liye koi order assign hai tab usko bhi remove karna hoga
         // because partner available nahi hai toh uska order bhi remove hoga
         if(partnerMap.containsKey(partnerId)){
-            DeliveryPartner deliveryPartner = partnerMap.get(partnerId);
-            partnerMap.remove(partnerId);
+//            DeliveryPartner deliveryPartner = partnerMap.get(partnerId);
+//            partnerMap.remove(partnerId);
             if(partnerToOrderMap.containsKey(partnerId)){
                 for(String orderId : partnerToOrderMap.get(partnerId)){
                     orderToPartnerMap.remove(orderId);
                 }
                 partnerToOrderMap.remove(partnerId);
             }
+            partnerMap.remove(partnerId);
         }
     }
 
@@ -116,13 +125,16 @@ public class OrderRepository {
         // after delation we have to decrease the count of numberOfOrder
         if (orderMap.containsKey(orderId)){
             String partnerId = orderToPartnerMap.get(orderId);
-            orderMap.remove(orderId);
-            orderToPartnerMap.remove(orderId);
+
             if(partnerId != null && partnerToOrderMap.containsKey(partnerId)){
                 partnerToOrderMap.get(partnerId).remove(orderId);
                 DeliveryPartner partner = partnerMap.get(partnerId);
-                partner.setNumberOfOrders(partner.getNumberOfOrders() - 1);
+                if (partner != null){
+                    partner.setNumberOfOrders(Math.max(0, partner.getNumberOfOrders() - 1));
+                }
             }
+            orderMap.remove(orderId);
+            orderToPartnerMap.remove(orderId);
         }
     }
 
@@ -180,6 +192,6 @@ public class OrderRepository {
                 }
             }
         }
-        return null;
+        return lastTime != -1 ? convertTimeToString(lastTime) : null;
     }
 }
