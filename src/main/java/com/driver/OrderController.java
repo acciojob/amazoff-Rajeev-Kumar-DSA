@@ -28,8 +28,8 @@ public class OrderController {
             orderService.addOrder(order);
             return new ResponseEntity<>("New order added successfully", HttpStatus.CREATED);
         }catch (Exception e){
-            e.getMessage();
-            return new ResponseEntity<>("Failed", HttpStatus.INTERNAL_SERVER_ERROR);
+
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -39,8 +39,8 @@ public class OrderController {
             orderService.addPartner(partnerId);
             return new ResponseEntity<>("New delivery partner added successfully", HttpStatus.CREATED);
         }catch (Exception e){
-            e.getMessage();
-            return new ResponseEntity<>("Failed", HttpStatus.INTERNAL_SERVER_ERROR);
+
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
@@ -52,8 +52,8 @@ public class OrderController {
             //This is basically assigning that order to that partnerId
             return new ResponseEntity<>("New order-partner pair added successfully", HttpStatus.CREATED);
         }catch (Exception e){
-            e.getMessage();
-            return new ResponseEntity<>("Failed", HttpStatus.INTERNAL_SERVER_ERROR);
+
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -62,99 +62,130 @@ public class OrderController {
         try {
             Order order= orderService.getOrderById(orderId);;
             //order should be returned with an orderId.
-            if (order != null){
-                return new ResponseEntity<>(order, HttpStatus.OK);
-            }else {
-                return new ResponseEntity("Order not found", HttpStatus.NOT_FOUND);
-            }
-
+            return new ResponseEntity<>(order, HttpStatus.OK);
         }catch (Exception e){
 //            e.getMessage();
-            return new ResponseEntity("Failed to retrieve order: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
 
     @GetMapping("/get-partner-by-id/{partnerId}")
     public ResponseEntity<DeliveryPartner> getPartnerById(@PathVariable String partnerId){
+        try {
+            DeliveryPartner deliveryPartner = orderService.getPartnerById(partnerId);;
+            //deliveryPartner should contain the value given by partnerId
+            return new ResponseEntity<>(deliveryPartner, HttpStatus.CREATED);
+        }catch (Exception e){
+//            e.getMessage();
+            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
-        DeliveryPartner deliveryPartner = orderService.getPartnerById(partnerId);;
-
-        //deliveryPartner should contain the value given by partnerId
-
-        return new ResponseEntity<>(deliveryPartner, HttpStatus.CREATED);
     }
 
     @GetMapping("/get-order-count-by-partner-id/{partnerId}")
     public ResponseEntity<Integer> getOrderCountByPartnerId(@PathVariable String partnerId){
+        try {
+            Integer orderCount = orderService.getOrderCountByPartnerId(partnerId);;
+            //orderCount should denote the orders given by a partner-id
+            return new ResponseEntity<>(orderCount, HttpStatus.CREATED);
+        }catch (Exception e){
+//            e.getMessage();
+            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
-        Integer orderCount = orderService.getOrderCountByPartnerId(partnerId);;
-
-        //orderCount should denote the orders given by a partner-id
-
-        return new ResponseEntity<>(orderCount, HttpStatus.CREATED);
     }
 
     @GetMapping("/get-orders-by-partner-id/{partnerId}")
     public ResponseEntity<List<String>> getOrdersByPartnerId(@PathVariable String partnerId){
-        List<String> orders = orderService.getOrdersByPartnerId(partnerId);
+        try {
+            List<String> orders = orderService.getOrdersByPartnerId(partnerId);
+            //orders should contain a list of orders by PartnerId
+            return new ResponseEntity<>(orders, HttpStatus.CREATED);
+        }catch (Exception e){
+//            e.getMessage();
+            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
-        //orders should contain a list of orders by PartnerId
-
-        return new ResponseEntity<>(orders, HttpStatus.CREATED);
     }
 
     @GetMapping("/get-all-orders")
     public ResponseEntity<List<String>> getAllOrders(){
-        List<String> orders = orderService.getAllOrders();
+        try {
+            List<String> orders = orderService.getAllOrders();
+            //Get all orders
+            return new ResponseEntity<>(orders, HttpStatus.CREATED);
+        }catch (Exception e){
+//            e.getMessage();
+            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
-        //Get all orders
-        return new ResponseEntity<>(orders, HttpStatus.CREATED);
     }
 
     @GetMapping("/get-count-of-unassigned-orders")
     public ResponseEntity<Integer> getCountOfUnassignedOrders(){
-        Integer countOfOrders = orderService.getCountOfUnassignedOrders();
+        try {
+            Integer countOfOrders = orderService.getCountOfUnassignedOrders();
+            //Count of orders that have not been assigned to any DeliveryPartner
+            return new ResponseEntity<>(countOfOrders, HttpStatus.CREATED);
+        }catch (Exception e){
+//            e.getMessage();
+            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
-        //Count of orders that have not been assigned to any DeliveryPartner
-
-        return new ResponseEntity<>(countOfOrders, HttpStatus.CREATED);
     }
 
     @GetMapping("/get-count-of-orders-left-after-given-time/{partnerId}")
     public ResponseEntity<Integer> getOrdersLeftAfterGivenTimeByPartnerId(@PathVariable String time, @PathVariable String partnerId){
+        try {
+            Integer countOfOrders = orderService.getOrdersLeftAfterGivenTimeByPartnerId(time, partnerId);
+            //countOfOrders that are left after a particular time of a DeliveryPartner
+            return new ResponseEntity<>(countOfOrders, HttpStatus.CREATED);
+        }catch (Exception e){
+//            e.getMessage();
+            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
-        Integer countOfOrders = orderService.getOrdersLeftAfterGivenTimeByPartnerId(time, partnerId);
-
-        //countOfOrders that are left after a particular time of a DeliveryPartner
-
-        return new ResponseEntity<>(countOfOrders, HttpStatus.CREATED);
     }
 
     @GetMapping("/get-last-delivery-time/{partnerId}")
     public ResponseEntity<String> getLastDeliveryTimeByPartnerId(@PathVariable String partnerId){
-        String time = orderService.getLastDeliveryTimeByPartnerId(partnerId);
+        try {
+            String time = orderService.getLastDeliveryTimeByPartnerId(partnerId);
+            //Return the time when that partnerId will deliver his last delivery order.
+            return new ResponseEntity<>(time, HttpStatus.CREATED);
+        }catch (Exception e){
+//            e.getMessage();
+            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
-        //Return the time when that partnerId will deliver his last delivery order.
-
-        return new ResponseEntity<>(time, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/delete-partner-by-id/{partnerId}")
     public ResponseEntity<String> deletePartnerById(@PathVariable String partnerId){
+        try {
+            //Delete the partnerId
+            //And push all his assigned orders to unassigned orders.
+            orderService.deletePartner(partnerId);
+            return new ResponseEntity<>(partnerId + " removed successfully", HttpStatus.CREATED);
+        }catch (Exception e){
+//            e.getMessage();
+            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
-        //Delete the partnerId
-        //And push all his assigned orders to unassigned orders.
-        orderService.deletePartner(partnerId);
-        return new ResponseEntity<>(partnerId + " removed successfully", HttpStatus.CREATED);
     }
 
     @DeleteMapping("/delete-order-by-id/{orderId}")
     public ResponseEntity<String> deleteOrderById(@PathVariable String orderId){
+        try {
+            //Delete an order and also
+            // remove it from the assigned order of that partnerId
+            orderService.deleteOrder(orderId);
+            return new ResponseEntity<>(orderId + " removed successfully", HttpStatus.CREATED);
+        }catch (Exception e){
+//            e.getMessage();
+            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
-        //Delete an order and also
-        // remove it from the assigned order of that partnerId
-        orderService.deleteOrder(orderId);
-        return new ResponseEntity<>(orderId + " removed successfully", HttpStatus.CREATED);
     }
 }

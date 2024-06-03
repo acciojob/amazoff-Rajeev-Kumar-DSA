@@ -24,51 +24,43 @@ public class OrderRepository {
 
     public void saveOrder(Order order){
         // your code here
-        try {
-            if (order != null){
-                orderMap.put(order.getId(), order);
-            }
-        }catch (NullPointerException e){
-            e.printStackTrace();
+
+        if (order != null){
+            orderMap.put(order.getId(), order);
         }
+
 
     }
 
     public void savePartner(String partnerId){
         // your code here
         // create a new partner with given partnerId and save it
-        try {
-            if (partnerId != null){
-                DeliveryPartner deliveryPartner = new DeliveryPartner(partnerId);
-                partnerMap.put(partnerId, deliveryPartner);
-            }
-        }catch (NullPointerException e){
-            e.printStackTrace();
+        if (partnerId != null){
+            DeliveryPartner deliveryPartner = new DeliveryPartner(partnerId);
+            partnerMap.put(partnerId, deliveryPartner);
         }
 
     }
 
     public void saveOrderPartnerMap(String orderId, String partnerId){
-        try {
-            if(orderId != null && partnerId != null && orderMap.containsKey(orderId) && partnerMap.containsKey(partnerId)){
-                // your code here
-                //add order to given partner's order list
-                //increase order count of partner
-                //assign partner to this order
 
-                orderToPartnerMap.put(orderId, partnerId);
+        if(orderId != null && partnerId != null && orderMap.containsKey(orderId) && partnerMap.containsKey(partnerId)){
+            // your code here
+            //add order to given partner's order list
+            //increase order count of partner
+            //assign partner to this order
 
-                partnerToOrderMap.computeIfAbsent(partnerId, k->new HashSet<>()).add(orderId);
-                DeliveryPartner partner = partnerMap.get(partnerId);
+            orderToPartnerMap.put(orderId, partnerId);
 
-                if (partner != null){
-                    partner.setNumberOfOrders(partner.getNumberOfOrders()+1);
-                }
+            partnerToOrderMap.computeIfAbsent(partnerId, k->new HashSet<>()).add(orderId);
+            DeliveryPartner partner = partnerMap.get(partnerId);
 
+            if (partner != null){
+                partner.setNumberOfOrders(partner.getNumberOfOrders()+1);
             }
-        }catch (NullPointerException e){
-            e.printStackTrace();
+
         }
+
     }
 
     public Order findOrderById(String orderId){
