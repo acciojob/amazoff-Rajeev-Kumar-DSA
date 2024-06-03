@@ -21,18 +21,24 @@ public class OrderRepository {
 
     public void saveOrder(Order order){
         // your code here
-        orderMap.put(order.getId(), order);
+        if (order != null){
+            orderMap.put(order.getId(), order);
+        }
+
     }
 
     public void savePartner(String partnerId){
         // your code here
         // create a new partner with given partnerId and save it
-        DeliveryPartner deliveryPartner = new DeliveryPartner(partnerId);
-        partnerMap.put(partnerId, deliveryPartner);
+        if (partnerId != null){
+            DeliveryPartner deliveryPartner = new DeliveryPartner(partnerId);
+            partnerMap.put(partnerId, deliveryPartner);
+        }
+
     }
 
     public void saveOrderPartnerMap(String orderId, String partnerId){
-        if(orderMap.containsKey(orderId) && partnerMap.containsKey(partnerId)){
+        if(orderId != null && partnerId != null && orderMap.containsKey(orderId) && partnerMap.containsKey(partnerId)){
             // your code here
             //add order to given partner's order list
             //increase order count of partner
@@ -42,7 +48,10 @@ public class OrderRepository {
 
             partnerToOrderMap.computeIfAbsent(partnerId, k->new HashSet<>()).add(orderId);
             DeliveryPartner partner = partnerMap.get(partnerId);
-            partner.setNumberOfOrders(partner.getNumberOfOrders()+1);
+
+            if (partner != null){
+                partner.setNumberOfOrders(partner.getNumberOfOrders()+1);
+            }
 
         }
     }
@@ -53,7 +62,10 @@ public class OrderRepository {
 //            return orderMap.get(orderId);
 //        }
 //        return null;
-        return orderMap.get(orderId);
+        if (orderId != null){
+            return orderMap.get(orderId);
+        }
+        return  null;
     }
 
     public DeliveryPartner findPartnerById(String partnerId){
@@ -62,7 +74,12 @@ public class OrderRepository {
 //            return partnerMap.get(partnerId);
 //        }
 //        return null;
-        return partnerMap.get(partnerId);
+        if (partnerId != null){
+            return partnerMap.get(partnerId);
+        }else {
+            return null;
+        }
+
     }
 
     public Integer findOrderCountByPartnerId(String partnerId){
@@ -72,8 +89,11 @@ public class OrderRepository {
 //            return deliveryPartner.getNumberOfOrders();
 //        }
 //        return 0;
-        DeliveryPartner deliveryPartner = partnerMap.get(partnerId);
-        return (deliveryPartner != null) ? deliveryPartner.getNumberOfOrders() : 0;
+        if (partnerId != null){
+            DeliveryPartner deliveryPartner = partnerMap.get(partnerId);
+            return (deliveryPartner != null) ? deliveryPartner.getNumberOfOrders() : 0;
+        }
+        return 0;
     }
 
     public List<String> findOrdersByPartnerId(String partnerId){
@@ -82,9 +102,11 @@ public class OrderRepository {
 //            return new ArrayList<>(partnerToOrderMap.get(partnerId));
 //        }
 //        return new ArrayList<>();
-
-        HashSet<String> orders = partnerToOrderMap.get(partnerId);
-        return (orders != null) ? new ArrayList<>(orders) : new ArrayList<>();
+        if (partnerId != null){
+            HashSet<String> orders = partnerToOrderMap.get(partnerId);
+            return (orders != null) ? new ArrayList<>(orders) : new ArrayList<>();
+        }
+        return  new ArrayList<>();
     }
 
     public List<String> findAllOrders(){
@@ -104,7 +126,7 @@ public class OrderRepository {
         // first I have to check in partnerMap . given id is present or not
         // jis partner ko remove karna tha agar uske liye koi order assign hai tab usko bhi remove karna hoga
         // because partner available nahi hai toh uska order bhi remove hoga
-        if(partnerMap.containsKey(partnerId)){
+        if(partnerId != null && partnerMap.containsKey(partnerId)){
 //            DeliveryPartner deliveryPartner = partnerMap.get(partnerId);
 //            partnerMap.remove(partnerId);
             if(partnerToOrderMap.containsKey(partnerId)){
@@ -123,7 +145,7 @@ public class OrderRepository {
         // I have to check orderId is present in ordermap or not
         // then remove from ordertoPartnerMap ,who partner person took the order, remove from their
         // after delation we have to decrease the count of numberOfOrder
-        if (orderMap.containsKey(orderId)){
+        if (orderId != null &&  orderMap.containsKey(orderId)){
             String partnerId = orderToPartnerMap.get(orderId);
 
             if(partnerId != null && partnerToOrderMap.containsKey(partnerId)){
@@ -155,7 +177,7 @@ public class OrderRepository {
         // your code here
         int count = 0;
         int time = parseTime(timeString);
-        if(partnerToOrderMap.containsKey(partnerId)){
+        if(partnerId != null && partnerToOrderMap.containsKey(partnerId)){
             for(String orderId : partnerToOrderMap.get(partnerId)){
                 Order order = orderMap.get(partnerId);
                 if(order != null && order.getDeliveryTime() > time){
@@ -184,7 +206,7 @@ public class OrderRepository {
         // your code here
         // code should return string in format HH:MM
         int lastTime = -1;
-        if(partnerToOrderMap.containsKey(partnerId)){
+        if(partnerId != null && partnerToOrderMap.containsKey(partnerId)){
             for(String orderId : partnerToOrderMap.get(partnerId)){
                 Order order = orderMap.get(orderId);
                 if(order != null && order.getDeliveryTime() > lastTime){
