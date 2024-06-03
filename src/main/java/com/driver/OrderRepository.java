@@ -2,10 +2,13 @@ package com.driver;
 
 import java.util.*;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class OrderRepository {
+
+
 
     private HashMap<String, Order> orderMap;
     private HashMap<String, DeliveryPartner> partnerMap;
@@ -21,8 +24,12 @@ public class OrderRepository {
 
     public void saveOrder(Order order){
         // your code here
-        if (order != null){
-            orderMap.put(order.getId(), order);
+        try {
+            if (order != null){
+                orderMap.put(order.getId(), order);
+            }
+        }catch (NullPointerException e){
+            e.printStackTrace();
         }
 
     }
@@ -30,29 +37,37 @@ public class OrderRepository {
     public void savePartner(String partnerId){
         // your code here
         // create a new partner with given partnerId and save it
-        if (partnerId != null){
-            DeliveryPartner deliveryPartner = new DeliveryPartner(partnerId);
-            partnerMap.put(partnerId, deliveryPartner);
+        try {
+            if (partnerId != null){
+                DeliveryPartner deliveryPartner = new DeliveryPartner(partnerId);
+                partnerMap.put(partnerId, deliveryPartner);
+            }
+        }catch (NullPointerException e){
+            e.printStackTrace();
         }
 
     }
 
     public void saveOrderPartnerMap(String orderId, String partnerId){
-        if(orderId != null && partnerId != null && orderMap.containsKey(orderId) && partnerMap.containsKey(partnerId)){
-            // your code here
-            //add order to given partner's order list
-            //increase order count of partner
-            //assign partner to this order
+        try {
+            if(orderId != null && partnerId != null && orderMap.containsKey(orderId) && partnerMap.containsKey(partnerId)){
+                // your code here
+                //add order to given partner's order list
+                //increase order count of partner
+                //assign partner to this order
 
-            orderToPartnerMap.put(orderId, partnerId);
+                orderToPartnerMap.put(orderId, partnerId);
 
-            partnerToOrderMap.computeIfAbsent(partnerId, k->new HashSet<>()).add(orderId);
-            DeliveryPartner partner = partnerMap.get(partnerId);
+                partnerToOrderMap.computeIfAbsent(partnerId, k->new HashSet<>()).add(orderId);
+                DeliveryPartner partner = partnerMap.get(partnerId);
 
-            if (partner != null){
-                partner.setNumberOfOrders(partner.getNumberOfOrders()+1);
+                if (partner != null){
+                    partner.setNumberOfOrders(partner.getNumberOfOrders()+1);
+                }
+
             }
-
+        }catch (NullPointerException e){
+            e.printStackTrace();
         }
     }
 
