@@ -24,30 +24,55 @@ public class OrderController {
 
     @PostMapping("/add-order")
     public ResponseEntity<String> addOrder(@RequestBody Order order){
-        orderService.addOrder(order);
-        return new ResponseEntity<>("New order added successfully", HttpStatus.CREATED);
+        try {
+            orderService.addOrder(order);
+            return new ResponseEntity<>("New order added successfully", HttpStatus.CREATED);
+        }catch (Exception e){
+            e.getMessage();
+            return new ResponseEntity<>("Failed", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PostMapping("/add-partner/{partnerId}")
     public ResponseEntity<String> addPartner(@PathVariable String partnerId){
-        orderService.addPartner(partnerId);
-        return new ResponseEntity<>("New delivery partner added successfully", HttpStatus.CREATED);
+        try {
+            orderService.addPartner(partnerId);
+            return new ResponseEntity<>("New delivery partner added successfully", HttpStatus.CREATED);
+        }catch (Exception e){
+            e.getMessage();
+            return new ResponseEntity<>("Failed", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 
     @PutMapping("/add-order-partner-pair")
     public ResponseEntity<String> addOrderPartnerPair(@RequestParam String orderId, @RequestParam String partnerId){
-        orderService.createOrderPartnerPair(orderId, partnerId);
-        //This is basically assigning that order to that partnerId
-        return new ResponseEntity<>("New order-partner pair added successfully", HttpStatus.CREATED);
+        try {
+            orderService.createOrderPartnerPair(orderId, partnerId);
+            //This is basically assigning that order to that partnerId
+            return new ResponseEntity<>("New order-partner pair added successfully", HttpStatus.CREATED);
+        }catch (Exception e){
+            e.getMessage();
+            return new ResponseEntity<>("Failed", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/get-order-by-id/{orderId}")
     public ResponseEntity<Order> getOrderById(@PathVariable String orderId){
+        try {
+            Order order= orderService.getOrderById(orderId);;
+            //order should be returned with an orderId.
+            if (order != null){
+                return new ResponseEntity<>(order, HttpStatus.OK);
+            }else {
+                return new ResponseEntity("Order not found", HttpStatus.NOT_FOUND);
+            }
 
-        Order order= orderService.getOrderById(orderId);;
-        //order should be returned with an orderId.
+        }catch (Exception e){
+//            e.getMessage();
+            return new ResponseEntity("Failed to retrieve order: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
-        return new ResponseEntity<>(order, HttpStatus.CREATED);
     }
 
     @GetMapping("/get-partner-by-id/{partnerId}")
