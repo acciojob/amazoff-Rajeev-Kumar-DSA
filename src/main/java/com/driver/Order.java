@@ -9,6 +9,9 @@ public class Order {
 
         // The deliveryTime has to converted from string to int and then stored in the attribute
         //deliveryTime  = HH*60 + MM
+        if (id == null || deliveryTime == null || !deliveryTime.matches("\\d{2}:\\d{2}")) {
+            throw new IllegalArgumentException("Invalid id or deliveryTime format");
+        }
         this.id = id;
         this.deliveryTime = covertDeliveryTime(deliveryTime);
     }
