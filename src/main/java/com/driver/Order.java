@@ -12,8 +12,16 @@ public class Order {
         if (id == null || deliveryTime == null || !deliveryTime.matches("\\d{2}:\\d{2}")) {
             throw new IllegalArgumentException("Invalid id or deliveryTime format");
         }
-        this.id = id;
-        this.deliveryTime = covertDeliveryTime(deliveryTime);
+        if (id == null || id.isEmpty() || deliveryTime == null || deliveryTime.isEmpty()) {
+            // Initialize with default values or handle accordingly
+            this.id = "defaultId";
+            this.deliveryTime = 0;  // Default to midnight (00:00)
+        } else {
+            this.id = id;
+            this.deliveryTime = covertDeliveryTime(deliveryTime);
+        }
+//        this.id = id;
+//        this.deliveryTime = covertDeliveryTime(deliveryTime);
     }
 
     public String getId() {
@@ -24,9 +32,13 @@ public class Order {
 
     private int covertDeliveryTime(String deliveryTime){
         // split the string with respect to colon ->  :
-        String[] timeParts = deliveryTime.split(":");
-        int hour = Integer.parseInt(timeParts[0]);
-        int mint = Integer.parseInt(timeParts[1]);
-        return hour*60 + mint;
+        try {
+            String[] timeParts = deliveryTime.split(":");
+            int hour = Integer.parseInt(timeParts[0]);
+            int mint = Integer.parseInt(timeParts[1]);
+            return hour*60 + mint;
+        }catch (Exception e){
+            return 0;   // midnight time
+        }
     }
 }
